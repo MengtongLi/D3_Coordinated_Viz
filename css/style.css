@@ -96,37 +96,25 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.map {
+    border: medium solid #999;
+}
 
-.axis path,
-.axis line {
+.countries {                          /*默认是黑白*/
+    fill: #FFF;
+    stroke: #CCC;
+    stroke-width: 2px;
+}
+
+.gratLines {
     fill: none;
-    stroke: black;
-    stroke-width: 3px;
-    shape-rendering: crispEdges;
+    stroke: #999;
+    stroke-width: 1px;
 }
 
-.axis text {
-    font-family: sans-serif;
-    font-size: 1em;
+.gratBackground {
+    fill: #D5E3FF;
 }
-
-.title {
-    font-family: sans-serif;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-
-.nameLine,
-.popLine {
-    font-family: sans-serif;
-    font-size: 1em;
-}
-
-
-
-
-
 
 /* ==========================================================================
    Helper classes
