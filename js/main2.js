@@ -125,7 +125,9 @@
             })
             .on("mouseout", function (d) {
                 dehighlight(d.properties);
-            });
+            })
+            .on("mousemove", moveLabel);
+
 
         var desc = regions.append("desc")
             .text('{"stroke": "#000", "stroke-width": "0.5px"}');
@@ -198,7 +200,8 @@
             })
             .attr("width", chartInnerWidth / csvData.length - 1)
             .on("mouseover", highlight)                                             //tutorial里这里忘记删除；了
-            .on("mouseout", dehighlight);
+            .on("mouseout", dehighlight)                                            //同一个地方每种动作只能用一种，不然会引起冲突
+            .on("mousemove", moveLabel);
 
 
         var desc = bars.append("desc")
@@ -332,9 +335,11 @@
     }
 
     function highlight(props) {
-        var selected = d3.selectAll("." + props.adm1_code)                               //change stroke
+        var selected = d3.selectAll("." + props.adm1_code)                            //change stroke
             .style("stroke", "blue")
             .style("stroke-width", "2");
+
+        setLabel(props);                                                               //在这里call steLabel！！！
     }
 
     function dehighlight(props) {
@@ -353,8 +358,51 @@
 
             var styleObject = JSON.parse(styleText);
 
+            d3.select(".infolabel")                                                    //把这段加到这里才能达到效果，而不是加到整个函数外面。
+                .remove();
+
             return styleObject[styleName];
         }
+    }
+
+
+    function setLabel(props) {
+        var labelAttribute = "<h1>" + props[expressed] +                               //label content
+            "</h1><b>" + expressed + "</b>";
+
+        var infolabel = d3.select("body")                                              //create info label div
+            .append("div")
+            .attr("class", "infolabel")
+            .attr("id", props.adm1_code + "_label")
+            .html(labelAttribute);
+
+        var regionName = infolabel.append("div")
+            .attr("class", "labelname")
+            .html(props.name);
+
+    }
+
+    function moveLabel() {
+        //get width of label
+        var labelWidth = d3.select(".infolabel")
+            .node()
+            .getBoundingClientRect()
+            .width;
+
+        //use coordinates of mousemove event to set label coordinates
+        var x1 = d3.event.clientX + 10,
+            y1 = d3.event.clientY - 75,
+            x2 = d3.event.clientX - labelWidth - 10,
+            y2 = d3.event.clientY + 25;
+
+        //horizontal label coordinate, testing for overflow
+        var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
+        //vertical label coordinate, testing for overflow
+        var y = d3.event.clientY < 75 ? y2 : y1;
+
+        d3.select(".infolabel")
+            .style("left", x + "px")
+            .style("top", y + "px");
     }
 
 
