@@ -118,8 +118,18 @@
             })
             .attr("d", path)
             .style("fill", function (d) {
-                return choropleth(d.properties, colorScale);                     // 之前是return colorScale(d.properties[expressed]);效果一样
+                return choropleth(d.properties, colorScale)                     // 之前是return colorScale(d.properties[expressed]);效果一样
+            })
+            .on("mouseover", function (d) {
+                highlight(d.properties);
+            })
+            .on("mouseout", function (d) {
+                dehighlight(d.properties);
             });
+
+        var desc = regions.append("desc")
+            .text('{"stroke": "#000", "stroke-width": "0.5px"}');
+
     }
 
     function makeColorScale(data) {                               //Natural Breaks
@@ -186,7 +196,14 @@
             .attr("class", function (d) {
                 return "bar " + d.adm1_code;
             })
-            .attr("width", chartInnerWidth / csvData.length - 1);
+            .attr("width", chartInnerWidth / csvData.length - 1)
+            .on("mouseover", highlight)                                             //tutorial里这里忘记删除；了
+            .on("mouseout", dehighlight);
+
+
+        var desc = bars.append("desc")
+            .text('{"stroke": "none", "stroke-width": "0px"}');
+
         /*
                     .attr("x", function (d, i) {
                         return i * (chartInnerWidth / csvData.length) + leftPadding;
@@ -312,6 +329,32 @@
 
         var chartTitle = d3.select(".chartTitle")
             .text("Number of Variable " + expressed[3] + " in each region");
+    }
+
+    function highlight(props) {
+        var selected = d3.selectAll("." + props.adm1_code)                               //change stroke
+            .style("stroke", "blue")
+            .style("stroke-width", "2");
+    }
+
+    function dehighlight(props) {
+        var selected = d3.selectAll("." + props.adm1_code)
+            .style("stroke", function () {
+                return getStyle(this, "stroke")
+            })
+            .style("stroke-width", function () {
+                return getStyle(this, "stroke-width")
+            });
+
+        function getStyle(element, styleName) {
+            var styleText = d3.select(element)
+                .select("desc")
+                .text();
+
+            var styleObject = JSON.parse(styleText);
+
+            return styleObject[styleName];
+        }
     }
 
 
