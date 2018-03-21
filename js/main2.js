@@ -64,7 +64,7 @@
 
             setChart(csvData, colorScale);
 
-            createDropdown();                                                        //记得在这里call这个下拉框函数
+            createDropdown(csvData);                                                 //记得在这里call这个下拉框函数，记得加上参数csvData
         }
     }
 
