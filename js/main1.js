@@ -45,6 +45,26 @@ function setMap() {                                                             
         var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries),             //topojson.feature用于将topojson转化成geojson
             franceRegions = topojson.feature(france, france.objects.FranceRegions).features;        //要将法国整个从世界国家中抠出来编辑，也要对法国各个地区分别进行编辑
 
+        for (var i = 0; i < csvData.length; i++) {                                //loop through csv to assign each set of csv attribute values to geojson region
+            var csvRegion = csvData[i];                                           //the current region
+            var csvKey = csvRegion.adm1_code;                                     //the CSV primary key
+
+            var attrArray = ["varA", "varB", "varC", "varD", "varE"];             //list of attributes, pseudo-global variables
+            for (var a = 0; a < franceRegions.length; a++) {                      //loop through geojson regions to find correct region
+
+                var geojsonProps = franceRegions[a].properties;                   //the current region geojson properties
+                var geojsonKey = geojsonProps.adm1_code;                          //the geojson primary key
+
+                if (geojsonKey === csvKey) {                                       //where primary keys match, transfer csv data to geojson properties object
+
+                    attrArray.forEach(function (attr) {                           //assign all attributes and values
+                        var val = parseFloat(csvRegion[attr]);                    //get csv attribute value
+                        geojsonProps[attr] = val;                                 //assign attribute and value to geojson properties
+                    });
+                }
+            }
+        }
+
         var countries = map.append("path")                                       //add Europe countries to map
             .datum(europeCountries)
             .attr("class", "countries")
@@ -61,8 +81,6 @@ function setMap() {                                                             
 
     }
 }
-
-
 
 
 
