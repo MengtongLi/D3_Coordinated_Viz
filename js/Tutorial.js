@@ -283,11 +283,11 @@
                 return choropleth(d.properties, colorScale)
             });
 
-        var bars = d3.selectAll(".bar")                                             //re-sort bars
+        var bars = d3.selectAll(".bar")                                               //re-sort bars
             .sort(function (a, b) {
                 return b[expressed] - a[expressed];
             })
-            .transition()                                                           //add animation
+            .transition()                                                             //add animation
             .delay(function (d, i) {
                 return i * 20
             })
@@ -325,7 +325,6 @@
             .attr("y", function (d, i) {
                 return yScale(parseFloat(d[expressed])) + topBottomPadding;
             })
-
             .style("fill", function (d) {                                           //color/recolor bars
                 return choropleth(d, colorScale);
             });
@@ -358,11 +357,11 @@
 
             var styleObject = JSON.parse(styleText);
 
-            d3.select(".infolabel")                                                    //把这段加到这里才能达到效果，而不是加到整个函数外面。
-                .remove();
-
             return styleObject[styleName];
         }
+
+        d3.select(".infolabel")                                                    //把这段加到这里才能达到效果，而不是加到整个函数外面。
+            .remove();
     }
 
 
@@ -383,22 +382,18 @@
     }
 
     function moveLabel() {
-        //get width of label
-        var labelWidth = d3.select(".infolabel")
+        var labelWidth = d3.select(".infolabel")                                       //get width of label
             .node()
             .getBoundingClientRect()
             .width;
 
-        //use coordinates of mousemove event to set label coordinates
-        var x1 = d3.event.clientX + 10,
+        var x1 = d3.event.clientX + 10,                                                //use coordinates of mousemove event to set label coordinates
             y1 = d3.event.clientY - 75,
             x2 = d3.event.clientX - labelWidth - 10,
             y2 = d3.event.clientY + 25;
 
-        //horizontal label coordinate, testing for overflow
-        var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
-        //vertical label coordinate, testing for overflow
-        var y = d3.event.clientY < 75 ? y2 : y1;
+        var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;      //horizontal label coordinate, testing for overflow
+        var y = d3.event.clientY < 75 ? y2 : y1;                                       //vertical label coordinate, testing for overflow
 
         d3.select(".infolabel")
             .style("left", x + "px")
