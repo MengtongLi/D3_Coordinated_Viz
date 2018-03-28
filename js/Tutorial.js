@@ -274,6 +274,27 @@
     function changeAttribute(attribute, csvData) {
         expressed = attribute;                                                        //change the expressed attribute
 
+        var changeArray = [];                                                         //从这里开始到下面是改变轴的range
+        for (var i = 0; i < csvData.length; i++) {
+            var val = parseFloat(csvData[i][expressed]);
+            changeArray.push(val);
+        }
+
+        //check for max and min values
+        var maxValue = d3.max(changeArray);
+        var minValue = d3.min(changeArray);
+
+        //update the chart Y axis
+        yScale = d3.scaleLinear()
+            .range([chartHeight, 0])
+            .domain([0, maxValue + (maxValue * .1)]);
+        //recreate vertical axis generator
+        var yAxis = d3.axisLeft()
+            .scale(yScale);
+
+        d3.selectAll("g.axis")
+            .call(yAxis);                                                             //到这里结束。这一大段都可以删，如果不想改变range的话。
+
         var colorScale = makeColorScale(csvData);                                     //recreate the color scale
 
         var regions = d3.selectAll(".regions")                                        //recolor enumeration units
